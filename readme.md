@@ -35,8 +35,11 @@ http://logz.io/learn/docker-monitoring-elk-stack/
 
 ## ToDo :
 
-* collecting metrics from endpoints
+* <s>collecting metrics from endpoints and jvm
+* <s>add console log metrics
+* send metrics to elastic
 * configure file log
 * read log file in logstash
 * create dashboard
 * create multi nodes to simulate traffic
+* create docker compose
