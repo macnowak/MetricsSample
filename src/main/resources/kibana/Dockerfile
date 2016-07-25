@@ -11,4 +11,8 @@ RUN \
 
 ADD kibana.yml kibana-4.5.2-linux-x64/config/kibana.yml
 
+RUN kibana-4.5.2-linux-x64/bin/kibana plugin --install elastic/sense
+
+RUN kibana-4.5.2-linux-x64/bin/kibana plugin --install elasticsearch/marvel/2.3.4
+
 ENTRYPOINT kibana-4.5.2-linux-x64/bin/kibana

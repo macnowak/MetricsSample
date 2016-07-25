@@ -13,4 +13,9 @@ RUN \
 
 # elasticsearch.yml and Dockerfile are on same location
 ADD elasticsearch.yml /home/esuser/elasticsearch-2.3.3/config/elasticsearch.yml
+
+RUN elasticsearch-2.3.3/bin/plugin install license
+
+RUN elasticsearch-2.3.3/bin/plugin install marvel-agent
+
 ENTRYPOINT elasticsearch-2.3.3/bin/elasticsearch
