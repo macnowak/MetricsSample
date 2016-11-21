@@ -1,19 +1,25 @@
 FROM java_image
 MAINTAINER Maciej Nowak
 
+RUN useradd -d /home/esuser -m esuser
+WORKDIR /home/esuser
+
 ENV DEBIAN_FRONTEND noninteractive
 
+ENV LOGSTASH_VER=5.0.0
+
 RUN \
-  wget https://download.elastic.co/logstash/logstash/logstash-all-plugins-2.3.3.tar.gz && \
-  tar xvzf logstash-all-plugins-2.3.3.tar.gz && \
-  rm -f logstash-all-plugins-2.3.3.tar.gz && \
-  chown -R esuser:esuser logstash-2.3.3
+  wget https://artifacts.elastic.co/downloads/logstash/logstash-${LOGSTASH_VER}.tar.gz && \
+  tar xvzf logstash-${LOGSTASH_VER}.tar.gz && \
+  rm -f logstash-${LOGSTASH_VER}.tar.gz && \
+  chown -R esuser:esuser logstash-${LOGSTASH_VER}
+
+RUN mkdir /etc/logstash/
+RUN mkdir /etc/logstash/conf.d/
 
 # logstash.conf and Dockerfile are on same location
-ADD logstash.conf /home/esuser
+ADD 01-input.conf /etc/logstash/conf.d/
+ADD 11-filter.conf /etc/logstash/conf.d/
+ADD 21-output.conf /etc/logstash/conf.d/
 
-RUN \
-    wget http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.36/mysql-connector-java-5.1.36.jar && \
-    chmod 777 mysql-connector-java-5.1.36.jar
-
-CMD logstash-2.3.3/bin/logstash -f logstash.conf
+CMD logstash-${LOGSTASH_VER}/bin/logstash -f /etc/logstash/conf.d/

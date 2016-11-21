@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  java:
+    build: java_image/.
+    image: java_image
+  elastic:
+    build: elastic/.
+    image: elastic
+    user: esuser
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    depends_on:
+      - java
+    networks:
+      - docker
+    container_name: elastic-container
+  logstash:
+    build: logstash/.
+    image: logstash
+    ports:
+      - "5044:5044"
+    networks:
+      - docker
+    links:
+      - elastic:elastic
+    depends_on:
+      - elastic
+    container_name: logstash-container
+  kibana:
+    build: kibana/.
+    image: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - docker
+    links:
+      - elastic:elastic
+    depends_on:
+      - elastic
+    container_name: kibana-container
+  graphite:
+    image: hopsoft/graphite-statsd
+    ports:
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125:8125/udp"
+      - "8126:8126"
+      - "80:80"
+    container_name: graphite-container
+  grapfana:
+      build: grafana/.
+      image: grafana
+      ports:
+        - "3000:3000"
+      networks:
+        - docker
+      depends_on:
+        - elastic
+      container_name: grafana-container
+  prometheus:
+      build: prometheus/.
+      image: prometheus
+      ports:
+        - "9090:9090"
+      networks:
+        - docker
+      container_name: prometheus-container
+
+networks:
+  docker:
+    driver: bridge

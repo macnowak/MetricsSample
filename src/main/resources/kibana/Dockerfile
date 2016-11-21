@@ -1,18 +1,22 @@
 FROM java_image
 MAINTAINER Maciej Nowak
 
+RUN useradd -d /home/esuser -m esuser
+WORKDIR /home/esuser
+
 ENV DEBIAN_FRONTEND noninteractive
+ENV KIBANA_VER=5.0.0
 
 RUN \
- wget https://download.elastic.co/kibana/kibana/kibana-4.5.2-linux-x64.tar.gz && \
- tar xvzf kibana-4.5.2-linux-x64.tar.gz && \
- rm -f kibana-4.5.2-linux-x64.tar.gz && \
- chown -R esuser:esuser kibana-4.5.2-linux-x64
 
-ADD kibana.yml kibana-4.5.2-linux-x64/config/kibana.yml
+ wget https://artifacts.elastic.co/downloads/kibana/kibana-${KIBANA_VER}-linux-x86_64.tar.gz && \
+ tar xvzf kibana-${KIBANA_VER}-linux-x86_64.tar.gz && \
+ rm -f kibana-${KIBANA_VER}-linux-x86_64.tar.gz && \
+ mv kibana-${KIBANA_VER}-linux-x86_64 kibana && \
+ chown -R esuser:esuser kibana
 
-RUN kibana-4.5.2-linux-x64/bin/kibana plugin --install elastic/sense
+ADD kibana.yml kibana/config/kibana.yml
 
-RUN kibana-4.5.2-linux-x64/bin/kibana plugin --install elasticsearch/marvel/2.3.4
+#RUN kibana/bin/kibana-plugin install  x-pack
 
-ENTRYPOINT kibana-4.5.2-linux-x64/bin/kibana
+ENTRYPOINT kibana/bin/kibana

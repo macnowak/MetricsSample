@@ -1,20 +1,11 @@
 package pl.net.nowak.metrics.config;
 
-import javax.sql.DataSource;
-import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public class DataBaseConfig {
 
-	@Bean
+/*	@Bean
 	@ConfigurationProperties(prefix = "datasource.main")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
@@ -47,5 +38,5 @@ public class DataBaseConfig {
 		liquibase.setChangeLog("classpath:liquibase/changelog-master.xml");
 		liquibase.setDropFirst(false);
 		return liquibase;
-	}
+	}*/
 }

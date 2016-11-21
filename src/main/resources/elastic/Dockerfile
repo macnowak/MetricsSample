@@ -1,21 +1,24 @@
 FROM java_image
 MAINTAINER Maciej Nowak
 
+RUN useradd -d /home/esuser -m esuser
+WORKDIR /home/esuser
+
 ENV DEBIAN_FRONTEND noninteractive
+ENV ELASTIC_VER=5.0.0
 
 RUN mkdir /data
 
 RUN \
- wget https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.3.3/elasticsearch-2.3.3.tar.gz && \
- tar xvzf elasticsearch-2.3.3.tar.gz && \
- rm -f elasticsearch-2.3.3.tar.gz && \
- chown -R esuser:esuser elasticsearch-2.3.3
+ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTIC_VER}.tar.gz && \
+ tar xvzf elasticsearch-${ELASTIC_VER}.tar.gz && \
+ rm -f elasticsearch-${ELASTIC_VER}.tar.gz && \
+ mv elasticsearch-${ELASTIC_VER} elasticsearch && \
+ chown -R esuser:esuser elasticsearch
 
 # elasticsearch.yml and Dockerfile are on same location
-ADD elasticsearch.yml /home/esuser/elasticsearch-2.3.3/config/elasticsearch.yml
+ADD elasticsearch.yml /home/esuser/elasticsearch/config/elasticsearch.yml
 
-RUN elasticsearch-2.3.3/bin/plugin install license
+#RUN elasticsearch/bin/elasticsearch-plugin install x-pack
 
-RUN elasticsearch-2.3.3/bin/plugin install marvel-agent
-
-ENTRYPOINT elasticsearch-2.3.3/bin/elasticsearch
+ENTRYPOINT elasticsearch/bin/elasticsearch
